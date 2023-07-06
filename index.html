@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/imageannotationapp/simple_app/styles2.css">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/PDFAnnotateJS/1.3.2/PDFAnnotate.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+
+    <script src="/imageannotationapp/simple_app/FileSaver.min.js"></script>
+    <script src="imageannotationapp/simple_app/fabric.min.js"  charset="utf-8"> </script>
+    <script src= "imageannotationapp/simple_app/draw2.js" charset="utf-8"> </script>
+  </head>
+  <body>
+    <div id="pdf-viewer"></div>
+    
+    <div class="mainBody">
+      <section>
+
+        <section class="leftSideElements">
+          <section class="toolbarPallete">
+
+            <div title = "Open a file" id="openIcon" class="toolbarOptions">
+              <input type="file" id = "inputForFiles">
+              <img id = "openFileIcon" src="/imageannotationapp/simple_app/images/pngs/open-file-button.png" alt="" height="40">
+            </div>
+
+            <div title = "Edit annotations"  id="editIcon" class="toolbarOptions">
+              <img src="/imageannotationapp/simple_app/images/pngs/edit.png" alt="" height="40">
+            </div>
+
+            <div title = "Remove all annotations"  id="cursorIcon" class="toolbarOptions">
+              <img src="/imageannotationapp/simple_app/images/pngs/decline.png" alt="" height="40">
+            </div>
+
+            <div title = "Draw free pencil"  id="pencilIcon" class="toolbarOptions">
+              <img src="/imageannotationapp/simple_app/images/pngs/pencil.png" alt="" height="40">
+            </div>
+
+            <div title = "Draw a line"  id="lineIcon" class="toolbarOptions">
+              <img src="/imageannotationapp/simple_app/images/pngs/line.png" alt="" height="40">
+            </div>
+
+            <div title = "Draw a rectangle"  id="rectangleIcon" class="toolbarOptions">
+              <img src="/imageannotationapp/simple_app/images/pngs/rectangle.png" alt="" height="40">
+            </div>
+
+            <div title = "Draw a circle"  id="circleIcon" class="toolbarOptions">
+              <img src="/imageannotationapp/simple_app/images/pngs/circle-shape-outline.png" alt="" height="40">
+            </div>
+
+            <div title = "Draw a polygon"  id="hexagonIcon" class="toolbarOptions">
+              <img src="/imageannotationapp/simple_app/images/pngs/hexagon.png" alt="" height="40">
+            </div>
+          </section>
+
+          <div class="container">
+            <div id="canvases_id" class="left" >
+              <canvas id="imageCanvas"  height="800" width = "800" style="z-index:1;"></canvas>
+          </div>
+
+      </section>
+
+        <section class="rightSideElements">
+          <aside>
+            <section class="annotationPallete">
+
+              <div id="addIcon" class="annotationOptions">
+                <img src="/imageannotationapp/simple_app/images/pngs/plus.png" alt="" height="40">
+              </div>
+
+              <div id="deleteIcon" class="annotationOptions">
+                <img src="/imageannotationapp/simple_app/images/pngs/rubbish-bin.png" alt="" height="40">
+              </div>
+
+              <div id="searchIcon" class="annotationOptions">
+                <img src="/imageannotationapp/simple_app/images/pngs/search.png" alt="" height="40">
+              </div>
+              <h2>Annotation List</h2>
+
+              <ul id="myUL">
+                  <li>
+                    <!-- <div class="liDiv">
+                      <div class="imgSrc" id ="addMe">
+                        <img src="images/pngs/plus.png" height="25" alt="">
+                      </div>
+
+                      <div class="imgSrc" id ="sketchBook">
+                        <img src="images/pngs/sketchbook.png" height="25" alt="">
+                      </div>
+
+                    </div>
+                    Added here -->
+                  </li>
+              </ul>
+
+            </section>
+          </aside>
+
+          <aside>
+            <section class="buttonPallete">
+
+              <div class="buttonOptions">
+
+                <button id="uploadImage_btn" type="button" name="Upload">Save Image</button>
+                <!-- <input id="button" type="file" name="name" style="display:none;"/>
+                <button id="saveImage_btn" "type="button" name="Upload">Deselect Image</button> -->
+              </div>
+
+            </section>
+          </aside>
+
+        </section>
+
+
+      </section>
+
+    </div>
+    <script>
+      // Get the container element
+      var container = document.getElementById("pdf-viewer");
+
+      // PDF.js initialization options
+      var options = {
+        url: "https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf",
+      };
+
+      // Render the PDF document
+      pdfjsLib.getDocument(options).promise.then(function (pdfDoc) {
+        pdfDoc
+          .getPage(1)
+          .then(function (page) {
+            var canvas = document.createElement("canvas");
+            var context = canvas.getContext("2d");
+
+            var viewport = page.getViewport({ scale: 1 });
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+
+            var renderContext = {
+              canvasContext: context,
+              viewport: viewport,
+            };
+
+            page.render(renderContext).promise.then(function () {
+              // Append the canvas to the container
+              container.appendChild(canvas);
+            });
+          })
+          .catch(function (error) {
+            // Handle any error that occurred during rendering
+            console.error("Error rendering the PDF:", error);
+          });
+      });
+    </script>
+  </body>
+</html>
