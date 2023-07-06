@@ -58,13 +58,6 @@ button:hover {
   display: inline-block;
 }
 
-/* #canvas{
-  position: absolute;
-  top:700px;
-  left: 50%;
-  width: 900px;
-  height: 1200px;
-  transform: translate(-50%, -50%);
-  background-color: transparent;
-  outline: 2px solid red;
-} */
+canvas {
+  border: 1px solid black;
+}
