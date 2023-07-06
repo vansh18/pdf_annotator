@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.7.570/build/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.3/fabric.min.js"></script>
+</head>
+<body>
+    <div class="section">
+        <!-- buttons -->
+        <span di><span id="page_num"></span> / <span id="page_count"></span></span>
+        <button id="prev">Previous</button>
+        <button id="zoomOut">-</button>
+        <div id="zoomed">150%</div>
+        <button id="zoomIn">+</button>
+        <button id="next">Next</button>
+        <div class="draw">
+            <button id="draw">Draw</button>
+            <button id="erase">Erase</button>
+            <button id="clear">Clear</button>
+        </div>
+    <canvas id="pdf_canvas"></canvas>
+    <script>
+        var pdfDoc = null,
+            pageNum = 1,
+            pageRendering = false,
+            pageNumPending = null,
+            scale = 1.5,
+            canvas = document.getElementById('pdf_canvas'),
+            ctx = canvas.getContext('2d');
+
+        // Render the page
+        function renderPage(num) {
+            pageRendering = true;
+            pdfDoc.getPage(num).then((page) => {
+                var viewport = page.getViewport({ scale: scale });
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                var renderCtx = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+                var renderTask = page.render(renderCtx);
+                renderTask.promise.then(() => {
+                    pageRendering = false;
+                    if (pageNumPending !== null) {
+                        renderPage(pageNumPending);
+                        pageNumPending = null;
+                    }
+                });
+            });
+            document.getElementById('page_num').textContent = num;
+        }
+
+        // Queue render page
+        function queueRenderPage(num) {
+            if (pageRendering) {
+                pageNumPending = num;
+            } else {
+                renderPage(num);
+            }
+        }
+
+        // Previous page
+        function onPrevPage() {
+            if (pageNum <= 1) {
+                return;
+            }
+            pageNum--;
+            queueRenderPage(pageNum);
+        }
+        document.getElementById('prev').addEventListener('click', onPrevPage);
+
+        // Next page
+        function onNextPage() {
+            if (pageNum >= pdfDoc.numPages) {
+                return;
+            }
+            pageNum++;
+            queueRenderPage(pageNum);
+        }
+        document.getElementById('next').addEventListener('click', onNextPage);
+
+        // Zoom in page
+        function zoomIn() {
+            scale = scale + 0.5;
+            queueRenderPage(pageNum);
+            updateZoomedPercentage();
+        }
+        document.getElementById('zoomIn').addEventListener('click', zoomIn);
+
+        // Zoom out page
+        function zoomOut() {
+            scale = scale - 0.5;
+            queueRenderPage(pageNum);
+            updateZoomedPercentage();
+        }
+        document.getElementById('zoomOut').addEventListener('click', zoomOut);
+
+        // Zoomed percentage
+        function updateZoomedPercentage() {
+            document.getElementById('zoomed').textContent = scale * 100 + '%';
+        }
+        updateZoomedPercentage();
+
+        // Asynchronously download PDF
+        pdfjsLib.getDocument('MRI.pdf').promise.then((doc) => {
+            pdfDoc = doc;
+            document.getElementById('page_count').textContent = doc.numPages;
+            renderPage(pageNum);
+        });
+    </script>
+</body>
+</html>
