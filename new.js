@@ -52,28 +52,49 @@ function loadPDF(url) {
 loadPDF("MRI.pdf");
 
 // Function to handle drawing on the canvas
-function startDrawing(e) {
-  isDrawing = true;
-  [lastX, lastY] = [e.offsetX, e.offsetY];
+function handleDrawing(e) {
+  if (!isDrawingEnabled) return;
+  ctx.strokeStyle = drawingColor;
+  ctx.lineWidth = drawingThickness;
+  if ((e.type === "mousedown" || e.type === "touchstart") && isDrawingEnabled) {
+    isDrawing = true;
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+  } else if (
+    (e.type === "mousemove" || e.type === "touchmove") &&
+    isDrawingEnabled
+  ) {
+    if (!isDrawing) return;
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.stroke();
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+  } else if (
+    (e.type === "mouseup" || e.type === "touchend") &&
+    isDrawingEnabled
+  ) {
+    isDrawing = false;
+  }
 }
 
-function draw(e) {
-  if (!isDrawing) return;
-  ctx.beginPath();
-  ctx.moveTo(lastX, lastY);
-  ctx.lineTo(e.offsetX, e.offsetY);
-  ctx.stroke();
-  [lastX, lastY] = [e.offsetX, e.offsetY];
-}
+// Remove duplicate event listeners
+canvas.removeEventListener("mousedown", handleDrawing);
+canvas.removeEventListener("mousemove", handleDrawing);
+canvas.removeEventListener("mouseup", handleDrawing);
+canvas.removeEventListener("mouseout", handleDrawing);
+canvas.removeEventListener("touchstart", handleDrawing);
+canvas.removeEventListener("touchmove", handleDrawing);
+canvas.removeEventListener("touchend", handleDrawing);
 
-function stopDrawing() {
-  isDrawing = false;
-}
+// Add updated event listeners
+canvas.addEventListener("mousedown", handleDrawing);
+canvas.addEventListener("mousemove", handleDrawing);
+canvas.addEventListener("mouseup", handleDrawing);
+canvas.addEventListener("mouseout", handleDrawing);
+canvas.addEventListener("touchstart", handleDrawing);
+canvas.addEventListener("touchmove", handleDrawing);
+canvas.addEventListener("touchend", handleDrawing);
 
-canvas.addEventListener("mousedown", startDrawing);
-canvas.addEventListener("mousemove", draw);
-canvas.addEventListener("mouseup", stopDrawing);
-canvas.addEventListener("mouseout", stopDrawing);
 
 // Function to handle saving modifications
 document.getElementById("save-button").addEventListener("click", function () {
