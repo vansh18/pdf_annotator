@@ -172,25 +172,28 @@ let drawingThickness = 2;
 function toggleDrawing() {
   isDrawingEnabled = !isDrawingEnabled;
   if (isDrawingEnabled) {
-      canvas.style.cursor = 'crosshair';
-      canvas.addEventListener('mousedown', handleDrawing);
-      canvas.addEventListener('mousemove', handleDrawing);
-      canvas.addEventListener('mouseup', handleDrawing);
-      canvas.addEventListener('mouseout', handleDrawing);
-      canvas.addEventListener('touchstart', handleDrawing);
-      canvas.addEventListener('touchmove', handleDrawing);
-      canvas.addEventListener('touchend', handleDrawing);
+    canvas.style.cursor = "crosshair";
+    canvas.addEventListener("mousedown", handleDrawing);
+    canvas.addEventListener("mousemove", handleDrawing);
+    canvas.addEventListener("mouseup", handleDrawing);
+    canvas.addEventListener("mouseout", handleDrawing);
+    canvas.addEventListener("touchstart", handleDrawing);
+    canvas.addEventListener("touchmove", handleDrawing);
+    canvas.addEventListener("touchend", handleDrawing);
+    document.getElementById("toggle-drawing").textContent = "Stop Drawing";
   } else {
-      canvas.style.cursor = 'auto';
-      canvas.removeEventListener('mousedown', handleDrawing);
-      canvas.removeEventListener('mousemove', handleDrawing);
-      canvas.removeEventListener('mouseup', handleDrawing);
-      canvas.removeEventListener('mouseout', handleDrawing);
-      canvas.removeEventListener('touchstart', handleDrawing);
-      canvas.removeEventListener('touchmove', handleDrawing);
-      canvas.removeEventListener('touchend', handleDrawing);
+    canvas.style.cursor = "auto";
+    canvas.removeEventListener("mousedown", handleDrawing);
+    canvas.removeEventListener("mousemove", handleDrawing);
+    canvas.removeEventListener("mouseup", handleDrawing);
+    canvas.removeEventListener("mouseout", handleDrawing);
+    canvas.removeEventListener("touchstart", handleDrawing);
+    canvas.removeEventListener("touchmove", handleDrawing);
+    canvas.removeEventListener("touchend", handleDrawing);
+    document.getElementById("toggle-drawing").textContent = "Start Drawing";
   }
 }
+
 
 
 // Function to handle drawing on the canvas
