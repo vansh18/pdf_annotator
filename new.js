@@ -226,6 +226,19 @@ function handleThicknessChange(e) {
     drawingThickness = parseInt(e.target.value);
 }
 
+// Function to handle clearing the user drawings on the canvas
+function clearCanvas() {
+  // Clear the user drawings
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // Redraw the PDF page
+  renderPage(pageNum);
+}
+
+// Event listener for the "Clear" button
+document.getElementById("clear-button").addEventListener("click", clearCanvas);
+
+
 // Event listeners
 canvas.addEventListener('mousedown', handleDrawing);
 canvas.addEventListener('mousemove', handleDrawing);
